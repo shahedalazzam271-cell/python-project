@@ -1,0 +1,81 @@
+# 1. إعداد المخازن الأساسية للبيانات
+students = {} # لتخزين السجلات [cite: 7, 17]
+student_ids = set() # لضمان عدم تكرار المعرف [cite: 21]
+
+# 2. دالة إضافة طالب (Requirement 1)
+def add_student(students, student_ids):
+    s_id = input("Enter Student ID: ") # [cite: 20]
+    if s_id in student_ids: # للتأكد من فرادة المعرف [cite: 21]
+        print("Error: Student ID already exists!")
+        return
+    name = input("Enter Student Name: ") # [cite: 20]
+    # تخزين الطالب في القاموس [cite: 22]
+    students[s_id] = {"name": name, "courses": [], "grades": []}
+    student_ids.add(s_id)
+    print("Student added successfully.")
+
+# 3. دالة تسجيل المواد (Requirement 2)
+def enroll_courses(students):
+    s_id = input("Enter Student ID to enroll: ")
+    if s_id in students:
+        course_input = input("Enter course codes (comma-separated): ") # [cite: 25]
+        # تحويل النص لقائمة [cite: 26]
+        course_list = [c.strip() for c in course_input.split(",")]
+        # منع التكرار باستخدام set [cite: 27]
+        students[s_id]["courses"] = list(set(students[s_id]["courses"] + course_list))
+        print("Enrollment updated.")
+    else:
+        print("Student not found!")
+
+# 4. دالة إضافة الدرجات (Requirement 3)
+def add_grades(students):
+    s_id = input("Enter Student ID: ")
+    if s_id in students:
+        grade_input = input("Enter numeric grades (comma-separated): ") # [cite: 29]
+        try:
+            # التأكد من أن المدخلات أرقام [cite: 31]
+            new_grades = [float(g.strip()) for g in grade_input.split(",")]
+            students[s_id]["grades"].extend(new_grades) # [cite: 30]
+            print("Grades added.")
+        except ValueError:
+            print("Error: Please enter numeric values only!")
+    else:
+        print("Student not found!")
+
+# 5. دالة حساب المتوسط (Requirement 4)
+def calculate_average(grades):
+    if not grades: return 0
+    return sum(grades) / len(grades) # [cite: 34]
+
+# 6. دالة التقرير النهائي (Requirement 5)
+def generate_report(students):
+    s_id = input("Enter Student ID for report: ")
+    if s_id in students:
+        st = students[s_id]
+        avg = calculate_average(st["grades"])
+        # الطباعة بنفس التنسيق المطلوب في صفحة 2 
+        print("-" * 30)
+        print(f"Student ID: {s_id}") # [cite: 39]
+        print(f"Name: {st['name']}") # [cite: 40]
+        print(f"Courses: {', '.join(st['courses'])}") # [cite: 41]
+        print(f"Grades: {st['grades']}") # [cite: 42]
+        print(f"Average: {avg}") # [cite: 43]
+        print("-" * 30)
+    else:
+        print("Student not found!")
+
+# القائمة الرئيسية (Menu-Driven Interface)
+while True:
+    print("\n--- Menu ---")
+    print("1. Add student") # [cite: 46]
+    print("2. Enroll in courses") # [cite: 47]
+    print("3. Add grades") # [cite: 48]
+    print("4. View student report") # [cite: 49]
+    print("5. Exit") # [cite: 50]
+    
+    choice = input("Choose (1-5): ")
+    if choice == '1': add_student(students, student_ids)
+    elif choice == '2': enroll_courses(students)
+    elif choice == '3': add_grades(students)
+    elif choice == '4': generate_report(students)
+    elif choice == '5': break # [cite: 51]
